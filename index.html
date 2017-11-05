@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/reset.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<script type="text/javascript" src="jquery-3.1.1.js"></script>
+</head>
+<script type="text/javascript">
+	$(function(){
+		
+		$.getJSON("news.json",function(data){
+			var d1,d2,d3;
+			for(i=0;i<5;i++)
+			{
+				for(j=0;j<5;j++)
+				{
+					d1=data.news[i].newlist[j].a;
+					d2=data.news[i].newlist[j].b;
+					d3=data.news[i].newlist[j].c;
+					$(".newscont li").eq(i).find("p").eq(j).find(".a").text(d1);
+					$(".newscont li").eq(i).find("p").eq(j).find(".b").text(d2);
+					if(d3){$(".newscont li").eq(i).find("p").eq(j).find(".c").text(d3)}
+				}
+		}
+	})
+
+		$.getJSON("shishen.json",function(data){
+			
+			function getdata(sh)
+			{
+				var hl="";
+				for(i=0;i<Math.ceil(sh.length/2);i++){
+					if(i==Math.ceil(sh.length/2)-1)
+					{
+						hl+='<li>';
+					}
+					else
+					{
+						hl+='<li class="bdr">';
+					}
+
+					hl+='<a href="">'
+					hl+='<img src="images/shishen/'+sh[i*2].src+'.png">'
+					if(sh[i*2].new)
+						{hl+='<i></i>'}
+					hl+='<span>'
+					hl+='<span>'
+					+sh[i*2].name
+					hl+='</span>'
+					hl+='</span>'
+					hl+='</a>'
+					if(sh[i*2+1]){
+						hl+='<a href="">'
+						hl+='<img src="images/shishen/'+sh[i*2+1].src+'.png">'
+						if(sh[i*2+1].new)
+							{hl+='<i></i>'}
+						hl+='<span>'
+						hl+='<span>'
+						+sh[i*2+1].name
+						hl+='</span>'
+						hl+='</span>'
+						hl+='</a>'
+						hl+='</li>';
+					}
+				}
+				$(".eachssr").width(Math.ceil(sh.length/2)*138);
+				$(".pre").hide();
+				if(Math.ceil(sh.length/2)>6)
+				{
+					$(".next").show();
+				}
+				else
+				{
+					$(".next").hide();
+				}
+				return hl;
+			}
+			function　all(){　
+				var hl=getdata(data.sh);
+				
+				return hl;
+			}
+			function ssr(n)
+			{
+				var datas=[],hl;
+				for(i in data.sh)
+				{
+					if(data.sh[i].tp==n)
+					{
+						datas.push(data.sh[i]);
+					}
+				}
+				hl=getdata(datas);
+				return hl;
+			}
+
+
+			$(".eachssr").html(all());
+			$(".getssr span").click(function(){
+				$(this).css("color","#cea441").siblings().css("color","#333");
+				switch($(this).index())
+				{
+					case 0:
+					$(".eachssr").html(all());
+					break;
+					case 1:
+					$(".eachssr").html(ssr(1));
+					break;
+					case 2:
+					$(".eachssr").html(ssr(2));
+					break;
+					case 3:
+					$(".eachssr").html(ssr(3));
+					break;
+					case 4:
+					$(".eachssr").html(ssr(4));
+				}
+				$(".eachssr")[0].index=0;
+				$(".eachssr")[0].maxl=parseInt($(".eachssr")[0].clientWidth/828)+1;
+				$(".eachssr").css({"transform":"translateX(0px)","transition":"none"});
+			})
+		})
+
+		$.getJSON("gong.json",function(data){
+			for(i=0;i<5;i++)
+			{
+				for(j=0;j<10;j++)
+				{
+					$(".details").eq(i).find("li").eq(j).find("a").text(data.gl[i].gylist[j].a)
+					$(".details").eq(i).find("li").eq(j).find("span").text(data.gl[i].gylist[j].b)
+				}
+			}
+		})
+
+		$.getJSON("cos.json",function(data){
+			for(i=0;i<6;i++)
+			{
+				for(j=0;j<8;j++)
+				{
+					$(".coswrap ul").eq(i).find("li").eq(j).find("img")[0].src="images/cosplay/"+data.cos[i].coslist[j].src;
+					$(".coswrap ul").eq(i).find("li").eq(j).find(".costil").text(data.cos[i].coslist[j].t);
+				}
+			}
+		})
+		$(".returntop").click(function(){
+			$("body").animate({scrollTop:0})
+		})
+		$.getJSON("game.json",function(data){
+			var d1,d2,d3,d4,d5;
+			function getd(datas)
+			{
+				var len,d=[],rc=["","no1","hot","newg"],l,d2=[],dd="";
+				l=datas.length;
+				console.log(l)
+				len=Math.ceil(l/16);
+				for(i=0;i<l;i++)
+				{
+					d.push('<a href="" class="'+rc[datas[i].new*1]+'">'+datas[i].name+'</a>')
+				}
+				for(i=0;i<len;i++)
+					{   d2[i]="";
+				for(j=0;i<16;j++)
+				{
+					d2[i]+=d[i*16+j];
+					if(i*16+j==l-1)
+					{
+						break;
+					}
+				}
+				d2[i]="<li class='games'>"+d2[i]+"</li>"
+				dd+=d2[i];
+			}
+			return dd;
+		}
+		var yh=$(".pcwrap ul").eq(0).html();
+		$(".pcwrap ul").eq(0).html(yh+getd(data.alls.pcgame[0].ct))
+		yh=$(".pcwrap ul").eq(1).html();
+		$(".pcwrap ul").eq(1).html(yh+getd(data.alls.pcgame[1].ct))
+		yh=$(".phwrap ul").eq(0).html();
+		$(".phwrap ul").eq(0).html(yh+getd(data.alls.phonegame[0].ct))
+		yh=$(".phwrap ul").eq(1).html();
+		$(".phwrap ul").eq(1).html(yh+getd(data.alls.phonegame[1].ct))
+		$(".tlwrap ul").eq(0).html(yh+getd(data.alls.gametool[0].ct))         
+     // console.log(getd(data.alls.pcgame[0].ct))
+
+
+
+ })	
+	})
+</script>
+<style type="text/css">
+	.wygame
+	{
+		width: 1000px;
+		height: 474px;
+		position: absolute;
+		top: 55px;
+		background: rgba(255,255,255,.9);
+		border-top: 1px solid #ececec;
+		right: 0;
+		margin-right: -124px;
+		z-index: 600;
+	}
+	.wygame>div
+	{
+		float: left;
+		height: 100%;
+	}
+	.wygame>div>div
+	{
+		position: relative;
+	}
+	.wygame h3
+	{
+		padding-left: 20px;
+		color: #bc2e2e;
+		height: 39px;
+		line-height: 39px;
+		background: rgba(220,220,220,.5);
+		border-right:1px #ccc solid;
+	}
+	.wygame ul
+	{
+		float: left;
+		height: 408px;
+		overflow: hidden;
+	}
+	.wygame ul:nth-child(1)
+	{
+		width: 135px;
+	}
+	.wygame li
+	{
+		padding-left: 20px;
+		line-height: 24px;
+		color: #333;
+		position: relative;
+		z-index: 10;
+	}
+	.wygame li a
+	{
+		color: #626262;
+		display: block;
+		overflow: hidden;
+	}
+	.pcgame
+	{
+		width: 299px;
+		background: 
+	}
+	.phgame
+	{
+		width: 568px;
+	}
+	.gametl
+	{
+		width: 131px;
+	}
+	.games
+	{
+		float: left;
+		height: 384px;
+		width:105px; 
+	}
+	.pcwrap
+	{
+		border-right:1px #ccc solid;
+		width: 298px;
+		height: 426px;
+		transition: width 0.3s;
+	}
+	.pcwrap ul:nth-child(1)
+	{
+		width: 280px;
+		position: relative;
+	}
+	.hideaa
+	{
+		width: 135px;
+		height: 426px;
+		float: left;
+		overflow: hidden;
+		transition: width 0.3s;
+	}
+	.wygame .pcwrap  .w270
+	{
+		width: 250px;
+	}
+	.wygame .morepc
+	{
+		width: 420px;
+	}
+	.gametp
+	{
+		margin-bottom: 4px;
+		font-weight: 700;
+	}
+	.no1
+	{
+		background: url(images/sprite1.png) no-repeat right -267px;
+	}
+	.hot
+	{
+		background: url(images/sprite1.png) no-repeat right -144px;
+	}
+	.newg
+	{
+		background: url(images/sprite1.png) no-repeat right -206px;
+	}
+	.phwrap
+	{
+	border-right:1px #ccc solid;
+	height: 426px;
+	transition: width 0.5s;
+     }
+	.phwrap .quni ul
+	{
+		width: 745px;
+		
+	}
+	.quni
+	{
+		float: left;
+		width: 432px;
+		height: 426px;
+		overflow: hidden;
+	}
+	.phwrap .quni ul li
+	{
+		width: 125px;
+	}
+	.phwrap .quni ul li:nth-child(2)
+	{
+		padding: 0;
+	}
+	.tlwrap ul:nth-child(1)
+	{
+		width: 131px;
+	}
+	.tlwrap ul:nth-child(1) li:nth-child(1)
+	{
+		display: none;
+	}
+	.moregame
+	{
+		display: block;
+		position: absolute;
+		right: 0;
+		top: 124px;
+		width: 20px;
+		padding-left: 10px;
+		padding-top: 7px;
+		padding-bottom: 7px;
+		background: #bc2e2e;
+		line-height: 14px;
+		color: #fff;
+		cursor: pointer;
+		z-index: 700;
+	}
+</style>
+<body>
+	<div class="auxiliary">
+		<div class="tocenter">
+			<a href="" class="logo">
+				<img src="images/logo.png">
+			</a>
+			<ul class="axnav">
+				<li class="rollward">
+					<a href="">安卓充值9.8折</a>
+					<a href="">领取网易严选宝箱</a>
+				</li>
+				<li class="">
+					<a href="" class="red">网易游戏全目录</a>
+					<span>
+						<i>
+						</i>
+					</span>
+					<div class="wygame">
+						<div class="pcgame">
+							<h3>客户端游戏</h3>
+							<div class="pcwrap clearfix">
+							<div class="hideaa">
+								<ul>
+									<li class="gametp">角色扮演</li>
+								</ul>
+								</div>
+								<ul>
+									<li class="gametp">竞技/休闲</li>
+								</ul>
+								<span class="moregame">更多热门端游</span>
+							</div>
+						</div>
+						<div class="phgame">
+							<h3>手机游戏</h3>
+							<div class="phwrap">
+								<ul id="rmtj">
+									<li class="gametp">热门推荐</li>
+								</ul>
+								<div class="quni">
+								<ul>
+									<li class="gametp">新品推荐</li>
+								</ul>
+								</div>
+								<span class="moregame">更多热门手游</span>
+							</div>
+						</div>
+						<div class="gametl">
+							<h3>游戏辅助</h3>
+							<div class="tlwrap">
+								<ul></ul>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li>
+					<a href="">安卓充值</a>
+				</li>
+
+				<li>
+					<a href="">注册账号</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<nav>
+		<ul class="navleft">
+			<li>扫码下载</li>
+			<li>
+				<img src="images/0.25">
+			</li>
+			<li>
+			</li>
+			<li>
+				<p class="yys">阴阳师</p>
+				<p class="seriously">阴阳师网易和风匠心巨制</p>
+			</li>
+		</ul>
+		<ul class="mainnav">
+			<li>
+				<a href="">官网首页</a>
+				<span class="line line1"></span>
+			</li>
+			<li>
+				<a href="">新闻资讯</a>
+				<span class="line line1"></span>
+			</li>
+			<li>
+				<a href="">游戏攻略</a>
+				<span class="line line1"></span>
+			</li>
+			<li>
+				<a href="">游戏特色</a>
+				<span class="line line1"></span>
+			</li>
+			<li>
+				<a href="">同人社区</a>
+				<span class="line line1"></span>
+			</li>
+			<li id="offing">
+				<a href="">官方渠道</a>
+				<div class="official">
+					<ul>
+						<li class="qqnum">
+							<span>204422345（1群）</span>
+							<span>586180977（6群）</span>
+							<span>540687051（2群）</span>
+							<span>477094979（7群）</span>
+							<span>546653739（3群）</span>
+							<span>239033695（8群）</span>
+							<span>546027375（4群）</span>
+							<span>478814406（9群）</span>
+							<span>344590267（5群）</span>
+							<span>478027123（10群</span>
+							<p>官方QQ群</p>
+						</li>
+						<li class="bdr0  netg">
+							<span class="tbaidu">
+								<img src="images/0.25">
+							</span>
+						</li>
+						<li class="bdr0  netg">
+							<span class="offer">
+								<img src="images/0.25">
+							</span>
+						</li>
+						<li class="bdr0 netg">
+							<span class="takewx"></span>
+						</li>
+						<li class="bdr0  netg">
+							<span class="takewb"></span>
+						</li>
+						
+					</ul>
+				</div>
+			</li>
+		</ul>
+	</nav>
+	<header>
+		<div class="banner">
+			<img class=" sy1" src="images/role1.png">
+			<img class=" qm1" src="images/role2.png">
+			<img class=" yb1" src="images/role4.png">
+			<img class=" bb1" src="images/role3.png">
+			<span class="prow"></span>
+			<a href="" class="bunny">
+				<img src="images/bunny.gif">
+			</a>
+			<ul class="app">
+				<li id="hideapp">
+					<a href=""></a>
+				</li>
+				<li>
+				</li>
+				<li>
+					<img src="images/line.png">
+				</li>
+				<li>
+					<a href="" class="apple"></a>
+					<a href="" class="adriond"></a>
+				</li>
+				<li>
+					<a href="">
+						<i></i>
+					</a>
+					<div class="version">
+						<p>发布日期：2017-08-16 版本号：1.2.0 文件大小：1.23G</p>
+						<p>支持系统：Windows 7/8/10</p>
+						<p>MD5值：2f16ff7f793239758903a05a9b1f0fac</p>
+					</div>
+				</li>
+				<li></li>
+			</ul>
+		</div>
+		<div class="calendar">
+			<h2 class="date">
+			</h2>
+			<ul class="active">
+				<li>
+					<a href="">
+						
+					</a>
+					<span>周一至周日<br>12:00-13:00,20:00-21:00</span>
+				</li>
+				<li>
+					<a href="">
+						<p class="actil">
+							年兽BOSS：通关探索副本概率开启，CD12小时 <br><br>
+							石距BOSS：妖气封印发现，CD1小时 逢魔之时-稀有BOSS土蜘蛛<br><br>
+							町中→逢魔之时，发现稀有BOSS土蜘蛛之后即可参与挑战，同时土蜘蛛还可邀请好友、寮友、附近玩家进行挑战。<br><br>
+							每天只能挑战1只，在每日17:00-20:00可发现新事件，每天20:00之后将无法继续发现新事件，已经触发的事件仍可以继续参与。<span>21:00活动结束。</span>
+						</p>
+					</a>
+					<span>年兽BOSS、石距BOSS、逢魔之时</span>
+				</li>
+				<li>
+					<a href="">
+						<p class="actil">全部正式服≥15级的玩家（除抢先体验服） 均可参与集结之境跨服斗技修习模式。</p>
+					</a>
+					<span>
+						开启时间：每日11:00-12:00,<br>20:00-21:00
+					</span>
+				</li>
+				<li>
+					<a href="">
+						<p class="actil">任务在未接受一段时间后，会自动刷新； 可接受的任务随阴阳师等级提升， 30级以上开放3个，50级以上开放4个。</p>
+					</a>
+					<span>委派式神完成对应任务,即可获得对应奖励；
+					</span>
+				</li>
+				<li>
+					<a href="">
+						<p class="actil">
+							【周一】雪幽魂、地藏像、鸣屋、网切<br>
+							【周二】涅槃之火、三味、招财猫、狰<br>
+							【周三】 魍魉之匣、被服、阴摩罗、魅妖<br>
+							【周四】反枕、心眼、树妖、针女<br>
+							【周五】日女巳时、镜姬、钟灵、破势<br>
+							【周六】随机掉落全部御魂<br>
+							【周日】随机掉落全部御魂<br>
+						</p>
+					</a>
+					<span>【周五】日女巳时、镜姬、钟灵、破势
+
+					</span>
+				</li>
+				<li>
+					<a href="">
+						
+					</a>
+					<span>秘闻副本、御灵之境
+					</span>
+				</li>
+				<li>
+					<a href="">
+						
+					</a>
+					<span>周一至周四鬼王，周五-周日阴界之门，时间19-21点
+					</span>
+				</li>
+				<li>
+					<a href="">
+						
+					</a>
+					<span>个人每周一6点重置，阴阳寮每日5点重置，周六日奖励翻倍
+
+					</span>
+				</li>
+				<li>
+					<a href="">
+						
+					</a>
+					<span>每日5点和18点重置
+					</span>
+				</li>
+			</ul>
+		</div>
+		<a class="yyt"></a>
+		<div class="waves">
+			<div class="waves1"></div>
+			<div class="waves2"></div>
+			<div class="waves3"></div>
+		</div>
+	</header>
+	<section class="section1 clearfix">
+		<div class="toc12">
+			<div id="banner1">
+				<ul id="autoroll">
+					<li>
+						<img src="images/r1.jpg">
+					</li>
+					<li>
+						<img src="images/r2.jpg">
+					</li>
+					<li>
+						<img src="images/r3.jpg">
+					</li>
+					<li>
+						<img src="images/r4.jpg">
+					</li>
+					<li>
+						<img src="images/r5.jpg">
+					</li>
+					<li>
+						<img src="images/r6.jpg">
+					</li>
+				</ul>
+				<p id="dot"><i></i><i></i><i></i><i></i><i></i><i></i></p>
+			</div>
+			<div class="news">
+				<ul class="newshead">
+					<li>
+						<i></i>
+						<a class="choice" href=""></a>
+						<span></span>
+					</li>
+					<li>
+						<i></i>
+						<a href=""></a>
+						<span></span>
+					</li>
+					<li>
+						<i></i>
+						<a href=""></a>
+						<span></span>
+					</li>
+					<li>
+						<i></i>
+						<a href=""></a>
+						<span></span>
+					</li>
+					<li>
+						<i></i>
+						<a href=""></a>
+					</li>
+				</ul>
+				<ul class="newscont">
+					<li>
+						<p>
+							<a href="" class="rec">
+								<span></span>
+								<span class="a">网易CEO丁磊 ·</span>
+								<span class="b">品质浴巾30天包退换</span>
+							</a>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+					</li>
+					<li>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+					</li>
+					<li>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+					</li>
+					<li>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+					</li>
+					<li>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+						<p>
+							<a href="">
+								<span class="a">-【新闻】 </span>
+								<span class="b">集结酣战 《阴阳师》“为崽而战”小纸人独家战报</span>
+							</a>
+							<span class="time c">2017-08-25</span>
+						</p>
+					</li>
+				</ul>
+			</div>
+			
+		</div>
+		<div class="rolewrap">
+			<div class="toc12">
+				<div class="showrole">
+					<ul>
+						<li class="startp"></li>
+						<li class="linedot"></li>
+						<li class=" showing showc shis1">
+							<i></i>
+							<span></span>
+						</li>
+						<li class="linedot"></li>
+						<li class="showc protagonist">
+							<i></i>
+							<span></span>
+						</li>
+					</ul>
+				</div>
+				<div id="ssrtt">
+					<p class="getssr">
+						<span>全部</span>
+						<span>SSR</span>
+						<span>SR</span>
+						<span>R</span>
+						<span>N</span>
+						<a href=""></a>
+					</p>
+					<p class="moressr">
+						<span class="pre"></span>
+						<span class="next"></span>
+					</p>
+					<div class="ssrwrap">
+						<ul class="eachssr">
+							<li class="bdr">
+								<a href="">
+									<img src="images/sr290.png">
+									<i></i>
+									<span>
+										<span>
+											是闪电
+										</span>
+									</span>
+								</a>
+								<a href="">
+									<img src="images/sr290.png">
+									<i></i>
+									<span>
+										<span>
+											是闪电
+										</span>
+									</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<ul class="juese">
+					<li class="xuanren"> 
+						<p class=" justyou">晴明</p>
+						<p>神乐</p>
+						<p>博源雅</p>
+						<p>八百比丘尼</p>
+					</li>
+					<li class="tu tu1">
+					</li>
+					<li class="renwu">
+						<span class="numer num1"></span>
+						<h3 class="jiao">晴明</h3>
+						<p class="shuo">
+							京都城中极具盛名的天才阴阳师
+							却不知为何失去了自己的记忆
+							等待着他的是寻回记忆的喜悦
+							还是不堪回首的残忍真相
+						</p>
+						<a href="" class="go"></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+	<section class="section2 clearfix">
+		<div class="toc12">
+			<div class="search">
+				<input type="text" placeholder="请输入寮间问题">
+				<div></div>
+			</div>
+			<div class="s2left">
+				<ul class="roll2">
+					<li>
+						<a href="">
+							<img src="images/r21.jpg">
+						</a>
+					</li>
+					<li>
+						<a href="">
+							<img src="images/r22.jpg">
+						</a>
+					</li>
+				</ul>
+				<p class="dot"><i></i><i></i></p>
+				<ul class="stnav">
+					<li>
+						<a href="">
+							<span></span>
+							<i></i>
+						</a>
+					</li>
+					<li>
+						<a href="">
+							<span></span>
+							<i></i>
+						</a>
+					</li>
+					<li>
+						<a href="">
+							<span></span>
+							<i></i>
+						</a>
+					</li>
+					<li>
+						<a href="">
+							<span></span>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="s2right">
+				<div class="showrole bd12">
+					<ul class="ml12 clearfix">
+						<li class="startv showc"></li>
+						<li class="linedot"></li>
+						<li class="showing showc novice">
+							<i></i>
+							<span></span>
+						</li>
+						<li class="linedot"></li>
+						<li class="showc shis2">
+							<i></i>
+							<span></span>
+						</li>
+						<li class="linedot"></li>
+						<li class="showc dou">
+							<i></i>
+							<span></span>
+						</li>
+						<li class="linedot"></li>
+						<li class="showc plays">
+							<i></i>
+							<span></span>
+						</li>
+					</ul>
+				</div>
+				<ul class="strategy">
+					<li>
+						<ul class="details">
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<ul class="details">
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<ul class="details">
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<ul class="details">
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<ul class="details">
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+							<li>
+								<a href=""> 【玩法】 无花中速队跨服3000达成！翻牌阶段的博弈小感</a>
+								<span>作者：高速公鹿</span>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+	<section class="section3 clearfix">
+		<div class="toc12">
+			<div class="cosnav">
+				<ul>
+					<li>
+						<a href=""></a>
+					</li>
+					<li class="cosnavar cosing">
+						<a href="">
+							<span class="cos1"></span>
+							<i></i>
+							<em class="cosicon1"></em>
+						</a>
+					</li>
+					<li class="cosnavar">
+						<a href="">
+							<span class="cos2"></span>
+							<i></i>
+							<em class="cosicon2"></em>
+						</a>
+					</li>
+					<li class="cosnavar">
+						<a href="">
+							<span class="cos3"></span>
+							<i></i>
+							<em class="cosicon3"></em>
+						</a>
+					</li>
+					<li class="cosnavar">
+						<a href="">
+							<span class="cos4"></span>
+							<i></i>
+							<em class="cosicon4"></em>
+						</a>
+					</li>
+					<li class="cosnavar">
+						<a href="">
+							<span class="cos5"></span>
+							<i></i>
+							<em class="cosicon5"></em>
+						</a>
+					</li>
+					<li class="cosnavar">
+						<a href="">
+							<span class="cos6"></span>
+							<em class="cosicon6"></em>
+						</a>
+					</li>
+					<li>
+						<a href=""></a>
+					</li>
+				</ul>
+			</div>
+			<div class="coscontent">
+				<ul class="coswrap">
+					<li class="cosblock">
+						<ul>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+						</ul>
+					</li>
+					<li class="cosblock">
+						<ul>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+						</ul>
+					</li>
+					<li class="cosblock">
+						<ul>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+						</ul>
+					</li>
+					<li class="cosblock">
+						<ul>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+						</ul>
+					</li>
+					<li class="cosblock">
+						<ul>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+						</ul>
+					</li>
+					<li class="cosblock">
+						<ul>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+							<li>
+								<a href="">
+									<img src="images/cos1.jpg">
+									<sapn class="coscover"><i></i></sapn>
+								</a>
+								<span class="costil">为白狼打call！【作者】我需要加水</span>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+	<section class="section4 clearfix">
+		<div class="toc12">
+			<ul class="view fl">
+				<li class="vedio">
+					<a class="leftv" href=""></a>
+				</li>
+				<li class="play">
+					<a href="javascript:void(0);">
+						<span><img src="images/v1.jpg"></span>
+						<span class="bcw">
+							《阴阳师》核心玩法
+						</span>
+					</a>
+				</li>
+				<li class="play">
+					<a href="javascript:void(0);">
+						<span><img src="images/v2.jpg"></span>
+						<span class="bcw">
+							《阴阳师》声优阵容
+						</span>
+					</a>
+				</li>
+				<li class="play">
+					<a href="javascript:void(0);">
+						<span><img src="images/v3.jpg"></span>
+						<span class="bcw">
+							【阴阳师X极乐净土】抽式神不如跳舞
+						</span>
+					</a>
+				</li>
+			</ul>
+			<ul class="view fr">
+				<li class="vedio">
+					<a class="rightd" href=""></a>
+				</li>
+				<li>
+					<a href="">
+						<span><img src="images/d1.jpg"></span>
+						<span>
+							游戏场景原画
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="">
+						<span><img src="images/d2.jpg"></span>
+						<span>
+							游戏场景原画
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="">
+						<span><img src="images/d3.jpg"></span>
+						<span>
+							游戏角色原画
+						</span>
+					</a>
+				</li>
+				
+			</ul>
+		</div>
+	</section>
+	<section class="section5 clearfix">
+		<div class="toc12">
+			<div class="s5til"></div>
+			<div class="actwrap">
+				<ul class="actvist">
+					<li>
+						<a href="">
+							<img src="images/ac1.png">
+							<sapn class="atname">式神应援物设计大赛</sapn>
+						</a>
+					</li>
+					<li>
+						<a href="">
+							<img src="images/ac2.png">
+							<sapn class="atname">《阴阳师》式神应援活动</sapn>
+						</a>
+					</li>
+					<li>
+						<a href="">
+							<img src="images/ac3.png">
+							<sapn class="atname">《阴阳师》和风美物大放送！</sapn>
+						</a>
+					</li>
+					<li>
+						<a href="">
+							<img src="images/ac4.png">
+							<sapn class="atname">和阴阳师一起关爱流浪动物</sapn>
+						</a>
+					</li>
+					<li>
+						<a href="">
+							<img src="images/ac5.png">
+							<sapn class="atname">必胜客回馈季活动开启！</sapn>
+						</a>
+					</li>
+					<li>
+						<a href="">
+							<img src="images/ac6.png">
+							<sapn class="atname">花火同人祭 式神浴衣设计大赛</sapn>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+	<section class="section6 clearfix">
+		<div class="toc12">
+			<ul class="focus clearfix">
+				<li class="blogo">
+					<a href=""></a>
+				</li>
+				<li class="social">
+					<span class="s1">关注官方微博</span>
+					<span class="s1">扫描二维码</span>
+					<span class="swb"></span>
+					<div>
+						<img src="images/wb.png">					
+					</div>
+					<p>
+						<a href="">
+							<span class="bdt">微博名：</span>
+							<span class="cy">网易阴阳师手游</span>
+						</a>
+					</p>
+				</li>
+				<li class="social">
+					<span class="s1">关注微信公众号</span>
+					<span class="s1">扫描二维码</span>
+					<span class="swx"></span>
+					<div>
+						<img src="images/wx.jpg">		
+					</div>
+					<p>
+						<span  class="bdt">公众号：</span>
+						<span class="cy">yinyangshi163</span>
+					</p>
+				</li>
+				<li class="csd">
+					<div></div>
+					<p>客户服务电话</p>
+					<p class="tel">0571-26201179</p>
+					<p>
+						<a href=""><span class="cy">问题反馈</span></a>
+						<a href=""><span class="cy">精灵咨询</span></a>
+					</p>
+				</li>
+			</ul>
+			<div class="returntop"></div>
+		</div>
+	</section>
+	<footer>
+		<section class="fsection1">
+			<span class="more"></span>
+			<a class="gotry" href="">
+				<span class="gotxt"></span>
+				<span class="zheng"></span>
+				<span class="door"></span>
+				<div class="trycode">
+					<img src="images/1.25">
+					<p></p>
+				</div>
+			</a>
+		</section>
+		<section class="fsection2">
+			<p class="share">
+				<span>分享到:</span>
+				<a class="wchat" href="">微信</a>
+				<a class="ychat" href="">易信</a>
+				<a class="wbo" href="">新浪微博</a>
+				<a class="qqz" href="">QQ空间</a>
+			</p>
+			<div class="other">
+				<div class="fl">
+					<a href="">
+						<img src="images/netlogo.png">
+					</a>
+					<a href="">
+						<img src="images/nie.png">
+					</a>
+				</div>
+				<div class="fr">
+					<p class="about">
+						<a href="">公司简介</a> - <a href=""><客户服务</a> - <a href="">相关法律</a> - <a href="">网易游戏</a> - <a href="">联系我们</a> - <a href="">商务合作</a> - <a href="">加入我们</a> - <a href="">用户协议</a>
+					</p>
+					<p class="copyright">
+						<span>网易公司版权所有 ©1997-2017</span>
+						<a href="">点击查看家长监护工程 ></a>
+					</p>
+				</div>
+			</div>
+			<p>本游戏适合16岁以上的玩家进入。</p>
+			<p>积极健康的游戏心态是健康游戏的开端，本游戏故事情节设置紧凑，请您合理控制游戏时间，避免沉溺游戏影响生活，注意自我保护，防范网络陷阱。</p>
+			<p>《网络游戏管理暂行办法》 文网游备字【2016】M-RPG4708号 《网络文化经营许可证》 浙网文[2016]0155-055号 </p>
+			<p>批准文号：新广出审【2017】6710号 出版物号：ISBN 978-7-7979-9973-1</p>
+		</section>
+	</footer>
+	<div class="vedios">
+		<video width="800" height="520" controls="controls"></video>
+		<div class="cancel"></div>
+	</div>
+	<script type="text/javascript" src="js/jqq.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+</body>
+</html>
